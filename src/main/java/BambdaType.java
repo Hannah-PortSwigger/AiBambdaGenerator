@@ -197,8 +197,17 @@ public enum BambdaType {
                 `burp.api.montoya.utilities.CompressionType.GZIP`.
                   - Hashing: `utilities().cryptoUtils().generateDigest(data, \
                 burp.api.montoya.utilities.DigestAlgorithm.SHA_256)` (returns a ByteArray).
-                  - Also available via `utilities()`: `byteUtils()`, `stringUtils()`, `numberUtils()`, \
-                `randomUtils()` (e.g. `randomUtils().randomString(length)`), and `jsonUtils()`. \
+                  - Also available via `utilities()`, each narrow in scope — do not assume methods \
+                beyond these: `randomUtils()` (e.g. `randomUtils().randomString(length)`); \
+                `byteUtils()` for raw `byte[]` (`convertToString(bytes)`, `convertFromString(string)`, \
+                `indexOf(...)`, `countMatches(...)`); `stringUtils()`, which only converts ASCII \
+                to/from hex (`convertAsciiToHexString(s)`, `convertHexStringToAscii(s)`) — for other \
+                string work use plain Java; `numberUtils()` for base conversions between \
+                binary/octal/decimal/hex (e.g. `convertHexToDecimal(s)`, `convertDecimalToHex(s)`, or \
+                `convertHex(s, radix)`); and `jsonUtils()`, which reads and edits JSON by a location \
+                path rather than parsing it into a Map or object (`readString(json, location)`, also \
+                `read`, `readLong`, `readDouble`, `readBoolean`; `add(json, location, newJson)`, \
+                `update(json, location, newJson)`, `remove(json, location)`, and `isValidJson(json)`). \
                 Reach for these before java.util.Base64, java.net.URLDecoder, \
                 java.security.MessageDigest, or java.util.zip.
 
@@ -257,19 +266,24 @@ public enum BambdaType {
                 `.ipAddress()` (the resolved server IP). For a message's server IP, use its \
                 `httpService().ipAddress()`, e.g. `requestResponse.httpService().ipAddress()`.
                   - HttpRequest: `.method()`, `.url()`, `.path()`, `.query()`, `.fileExtension()`, \
-                `.httpVersion()`, `.isInScope()`, `.headerValue(name)`, `.hasHeader(name)`, \
-                `.headers()`, `.body()`, `.bodyToString()`, `.parameters()`, `.parameterValue(name)`, \
-                `.contains(text, caseSensitive)`. It is immutable — derive a new one with \
+                `.httpVersion()`, `.isInScope()`, `.body()`, `.bodyToString()`, `.parameters()`, \
+                `.parameterValue(name)`, `.contains(text, caseSensitive)` (headers below). It is \
+                immutable — derive a new one with \
                 `.withAddedHeader(name, value)`, `.withUpdatedHeader`, `.withRemovedHeader`, \
                 `.withBody`, `.withPath`, or `.withMethod`; build one with \
                 `HttpRequest.httpRequest(service, text)` or `HttpRequest.httpRequestFromUrl(url)`.
                   - HttpResponse: `.statusCode()` (a short), `.reasonPhrase()`, `.mimeType()`, \
-                `.statedMimeType()`, `.headerValue(name)`, `.hasHeader(name)`, `.headers()`, \
-                `.body()`, `.bodyToString()`, `.cookies()`, `.cookieValue(name)`, \
-                `.contains(text, caseSensitive)`. It is immutable — derive a new one with \
-                `.withStatusCode(code)`, `.withReasonPhrase(text)`, `.withBody(text)`, \
+                `.statedMimeType()`, `.body()`, `.bodyToString()`, `.cookies()`, `.cookieValue(name)`, \
+                `.contains(text, caseSensitive)` (headers below). It is immutable — derive a new one \
+                with `.withStatusCode(code)`, `.withReasonPhrase(text)`, `.withBody(text)`, \
                 `.withAddedHeader(name, value)`, `.withUpdatedHeader(name, value)`, or \
                 `.withRemovedHeader(name)`.
+                  - Headers (on request and response): to look up a single header prefer the direct \
+                accessors over iterating — `.hasHeader(name)` tests presence, `.headerValue(name)` \
+                returns its value String (null when absent, so guard or null-check), `.header(name)` \
+                returns the whole HttpHeader, and `.hasHeader(name, value)` tests an exact match. \
+                Stream `.headers()` — a `List<HttpHeader>`, each with `.name()`, `.value()`, and \
+                `.toString()` (the full line) — only to scan or collect across multiple headers.
                   - Annotations: `.notes()`, `.setNotes(String)`, `.highlightColor()`, \
                 `.setHighlightColor(HighlightColor.RED)`.
                   - ByteArray (returned by `.body()`): `.length()`, `.toString()`, `.indexOf(text)`, \

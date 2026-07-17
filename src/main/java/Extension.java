@@ -14,6 +14,20 @@ public class Extension implements BurpExtension {
 
         JPanel panel = new GeneratorPanel(api);
         api.userInterface().registerSuiteTab("Bambda Generator", panel);
+
+        api.logging().logToOutput("""
+                AI Bambda Generator loaded.
+
+                ✧˚･ﾟ。 ──────────────── ｡ﾟ･˚✧
+
+                AI is non-deterministic — expect results to vary and the first attempt not \
+                always to be right. Regenerate, tweak your description, or adjust the temperature. \
+                For better results, describe the behaviour clearly and include concrete details \
+                (header/parameter names, status codes, URL patterns).
+
+                Something not working as expected? (╯°□°)╯︵ ┻━┻
+                Please raise an issue (pull requests welcome): \
+                https://github.com/Hannah-PortSwigger/AiBambdaGenerator/issues""");
     }
 
     @Override

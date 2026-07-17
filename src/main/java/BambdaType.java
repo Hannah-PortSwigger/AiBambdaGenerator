@@ -286,9 +286,11 @@ public enum BambdaType {
                 `.toString()` (the full line) — only to scan or collect across multiple headers.
                   - Annotations: `.notes()`, `.setNotes(String)`, `.highlightColor()`, \
                 `.setHighlightColor(HighlightColor.RED)`.
-                  - ByteArray (returned by `.body()`): `.length()`, `.toString()`, `.indexOf(text)`, \
-                `.countMatches(text)`, `.subArray(start, end)`; build one with \
-                `ByteArray.byteArray("text")`.""";
+                  - Body as text: for string work on the body — regex, `substring`, `split`, \
+                `contains`, or any String method — call `.bodyToString()` (a String), NOT `.body()`. \
+                `.body()` returns a ByteArray (raw bytes, not a String), useful for byte-level work: \
+                `.length()`, `.toString()` (decode to text), `.indexOf(text)`, `.countMatches(text)`, \
+                `.subArray(start, end)`; build one with `ByteArray.byteArray("text")`.""";
 
         /** ProxyHttpRequestResponse — the HTTP navigation plus Proxy-only convenience accessors. */
         private static final String PROXY_HTTP = HTTP + """

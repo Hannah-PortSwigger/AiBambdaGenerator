@@ -143,8 +143,9 @@ public enum BambdaType {
             to `insertionPoint.issueHighlights(payload)` (both take a `ByteArray`, not a String); it \
             returns a `List<Range>` for the built request, so map it with `Marker::marker` \
             (`issueHighlights(payload).stream().map(Marker::marker).toList()`). Response markers: \
-            find the indicator in the whole response with `int s = \
-            sent.response().toByteArray().indexOf(indicator)`, then \
+            the offset must be a position in the WHOLE response — `int s = \
+            sent.response().toByteArray().indexOf(indicator)` — NOT a `body()` or `bodyToString()` \
+            index, which is relative to the body and lands the marker up in the headers; then \
             `Marker.marker(s, s + indicator.length())`. \
             `withRequestMarkers`/`withResponseMarkers` each return a new copy, so chain both — \
             `sent.withRequestMarkers(reqMarkers).withResponseMarkers(respMarkers)` — and pass that \
